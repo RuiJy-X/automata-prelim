@@ -1,0 +1,19 @@
+PROJECT 6: FINITE AUTOMATON SIMULATION WITH REGULAR EXPRESSION 
+    
+ 
+
+Description: Develop a program that simulates a Finite Automaton (DFA or NFA) and accepts or rejects strings based on a given Regular Expression (RE). The RE should be converted to an automaton before string recognition. 
+
+ 
+
+Instructions: 
+
+ 
+
+Convert the regular expression into an NFA or DFA. 
+Simulate the automaton and check if the input string is accepted by the automaton. 
+Implement basic regular expression features like union, concatenation, and Kleene star. 
+Provide examples of strings that should be accepted or rejected based on the regular expression. 
+Python/Java program that simulates an FA and checks string acceptance based on a regular expression. 
+Documentation describing the automaton simulation and how the regular expression is processed. 
+Video showing how the program simulates the FA and tests a variety of input strings. 
