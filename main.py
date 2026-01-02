@@ -86,11 +86,34 @@ class NFA:
                 return False
         # accept if any current state is in accepts
         return any(s in self.accepts for s in current_states)
+    
+def reconstruct(nfa):
+    new_nfa = NFA()
+    new_nfa.add_state(nfa.start, is_start=True)
+    stack = [new_nfa.start]
+    visited = set()
+    
+    while stack:
+        state = stack.pop()
+        if state in visited:
+            continue
+        visited.add(state)
+        for symbol, destinations in nfa.transitions[state].items():
+            for dest in destinations:
+                is_accept = False
+                if dest in nfa.accepts:
+                    is_accept = True
+                new_nfa.add_state(dest, is_accept=is_accept)
+                new_nfa.add_transition(state, symbol, dest)
+                stack.append(dest)
+            
+    return new_nfa        
+    
                     
 
 def regex_to_nfa(postfix):
     stack = []
-    
+    #ab.
     for token in postfix:
         if str(token).isalnum():
             nfa = NFA()
@@ -156,7 +179,7 @@ def standardize(regex):
     operators = set(['*', '.', '+'])
     prev = None 
     for c in regex: 
-        if prev is not None: 
+        if prev is not None: # in between 2 symbols we add a dot, if its closing parentheses then an opening, then we add a dot
             if (prev not in operators and prev != '(') or prev == "*" or prev == ")": 
                 if c not in operators and c != ')' or c == "(": 
                     result.append('.') 
@@ -179,7 +202,7 @@ def postfix(regex):
             while stack and stack[-1] != "(":
                 result.append(stack.pop())
             stack.pop()
-        else:
+        else: #finds an operator
             while stack and stack[-1] != "(" and operators[stack[-1]] >= operators[c]:
                 result.append(stack.pop())
             stack.append(c)
@@ -189,21 +212,24 @@ def postfix(regex):
     return "".join(result)
 
 
-
 def main():
-    regex = "rujz+(andrei)*"
+    regex = "ab+(ba)*"
     print(f"Regex: {regex}")
     postfix1 = postfix(standardize(regex))
     print(f"Postfix: {postfix1}")
     nfa = regex_to_nfa(postfix1)
+    nfa = reconstruct(nfa)
     nfa.display()
     
-    test_strings = ["rujz","andreiandrei"]
+    test_strings = ["", "ab","ba","baba","abab"]
     for s in test_strings:
         print(f"{s}: {'ACCEPTED' if nfa.simulate(s) else 'REJECTED'}")
     
     print("\nAccept States:")
     print("\n".join(i for i in nfa.accepts))
+    
+    print("\nStart States:")
+    print(nfa.start)
     
 
 if __name__ == "__main__":
